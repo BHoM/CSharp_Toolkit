@@ -30,7 +30,7 @@ namespace BH.Engine.Node2Code
                         output.DataType = MakeList(output.DataType);
                         variables[output.BHoM_Guid].Type = output.DataType;
                     }
-                    result.Add(new LoopNode(new List<INode> { node }, new List<DataParam>()));
+                    result.Add(new LoopNode(new List<INode> { node }));
                 }  
                 else
                     result.Add(node);
@@ -42,9 +42,6 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
         /**** Private Methods                           ****/
-        /***************************************************/
-
-
         /***************************************************/
 
         private static List<INode> CollectLoopNodes(INode source, Dictionary<Guid, INode> nodes, Dictionary<Guid, ReceiverParam> receivers)
@@ -60,8 +57,7 @@ namespace BH.Engine.Node2Code
                     result.Add(nodes[group.Key]);
                     nodes.Remove(group.Key);
                     List<INode> next = CollectLoopNodes(nodes[group.Key], nodes, receivers);
-                }
-                    
+                }   
             }
 
             return result;

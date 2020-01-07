@@ -8,19 +8,23 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Node2Code
 {
-    public class ClusterContent : BHoMObject
+    public class LibraryNode : BHoMObject, INode
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public List<INode> InternalNodes { get; set; } = new List<INode>();
+        public string SourceFile { get; set; } = "";
 
-        public List<NodeGroup> NodeGroups { get; set; } = new List<NodeGroup>();
+        public string Description { get; set; } = "";
 
-        public List<DataParam> Inputs { get; set; } = new List<DataParam>();
+        public List<ReceiverParam> Inputs { get; set; } = new List<ReceiverParam>();
 
-        public List<ReceiverParam> Outputs { get; set; } = new List<ReceiverParam>();
+        public List<DataParam> Outputs { get; set; } = new List<DataParam>();
+
+        public bool IsInline { get; set; } = false;
+
+        public bool IsDeclaration { get; set; } = true;
 
         /***************************************************/
     }

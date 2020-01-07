@@ -133,6 +133,23 @@ namespace BH.Engine.Node2Code
             return SyntaxFactory.ObjectCreationExpression(objectType, null, initialiser);
         }
 
+        /***************************************************/
+
+        public static ExpressionSyntax Expression(this LibraryNode node, List<ExpressionSyntax> inputs)
+        {
+            string dataName = "";
+            if (node.Outputs.Count > 0)
+                dataName = node.Outputs.First().Name;
+
+            ExpressionSyntax sourceExpression = SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(node.SourceFile));
+            ExpressionSyntax dataExpression = SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(dataName));
+
+            List<ArgumentSyntax> arguments = new ExpressionSyntax[] { sourceExpression, dataExpression }.Select(x => SyntaxFactory.Argument(x)).ToList();
+            ArgumentListSyntax argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments));
+
+            return SyntaxFactory.InvocationExpression(SyntaxFactory.IdentifierName("BH.Engine.Library.Query.Match"), argumentList);
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/

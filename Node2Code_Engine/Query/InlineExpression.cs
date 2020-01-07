@@ -43,6 +43,36 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
+        public static Dictionary<Guid, Variable> InlineExpression(this ParamNode node, Dictionary<Guid, Variable> variables)
+        {
+            Dictionary<Guid, Variable> newVariables = new Dictionary<Guid, Variable>();
+
+            foreach (DataParam data in node.Outputs)
+            {
+                ExpressionSyntax expression = null;
+                if (data.Data is Enum)
+                    expression = SyntaxFactory.IdentifierName(data.DataType.FullName + "." + data.Data.ToString()); // will need to figure out this one
+                else if (data.Data is string)
+                    expression = SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(data.Data.ToString()));
+                else
+                    expression = SyntaxFactory.IdentifierName(data.Data.ToString());
+
+                if (expression != null)
+                {
+                    newVariables[data.BHoM_Guid] = new Variable
+                    {
+                        Expression = expression,
+                        Type = data.DataType,
+                        SourceId = data.BHoM_Guid
+                    };
+                }
+            }
+
+            return newVariables;
+        }
+
+        /***************************************************/
+
         public static Dictionary<Guid, Variable> InlineExpression(this GetPropertyNode node, Dictionary<Guid, Variable> variables)
         {
             List<ExpressionSyntax> arguments = node.Inputs.Select(x => Query.ArgumentValue(x, variables)).ToList();

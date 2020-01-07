@@ -80,6 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\LibraryNode.cs" />
+    <Compile Include="Nodes\ParamNode.cs" />
     <Compile Include="Nodes\LoopNode.cs" />
     <Compile Include="Nodes\BlockNode.cs" />
     <Compile Include="Nodes\CustomObjectNode.cs" />
@@ -90,7 +92,6 @@
     <Compile Include="Nodes\InitialiserNode.cs" />
     <Compile Include="Nodes\ConstructorNode.cs" />
     <Compile Include="Others\ClusterContent.cs" />
-    <Compile Include="Others\LibraryData.cs" />
     <Compile Include="Others\StatementInfo.cs" />
     <Compile Include="Others\NodeGroup.cs" />
     <Compile Include="Others\Variable.cs" />

@@ -16,8 +16,6 @@ namespace BH.oM.Node2Code
 
         public List<INode> InternalNodes { get; } = new List<INode>();
 
-        public List<DataParam> InternalParams { get; } = new List<DataParam>();
-
         public string Description { get; set; } = "";
 
         public List<DataParam> Outputs { get; set; } = new List<DataParam>();
@@ -33,7 +31,7 @@ namespace BH.oM.Node2Code
         /**** Constructors                              ****/
         /***************************************************/
 
-        public LoopNode(List<INode> content, List<DataParam> parameters, string description = "")
+        public LoopNode(List<INode> content, string description = "")
         {
             List<ReceiverParam> receivers = content.SelectMany(n => n.Inputs.Where(x => x.SourceId != Guid.Empty)).ToList();
             List<DataParam> emiters = content.SelectMany(n => n.Outputs.Where(x => x.TargetIds.Count > 0)).ToList();
@@ -58,7 +56,6 @@ namespace BH.oM.Node2Code
                                         }).ToList();
 
             InternalNodes = content;
-            InternalParams = parameters;
             Description = description;
         }
 

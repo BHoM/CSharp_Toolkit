@@ -23,7 +23,12 @@ namespace BH.Engine.Node2Code
         public static List<StatementInfo> IStatements(this INode node, Dictionary<Guid, Variable> variables, int depth = 0)
         {
             if (node.IsInline)
+            {
+                List<ExpressionSyntax> arguments = Arguments(node, variables, out List<ReceiverParam> listInputs);
+                if (listInputs.Count > 0 && !(node is SetPropertyNode)) // need a better way to do this
+                    node.Outputs.ForEach(output => PromoteToList(variables, output.BHoM_Guid));
                 return new List<StatementInfo>();
+            }
             else if (node is BlockNode)
                 return Statements(node as BlockNode, variables, depth);
             else
@@ -71,7 +76,7 @@ namespace BH.Engine.Node2Code
         {
             List<Variable> outputVariables = node.IOutputVariables(variables);
             List<ExpressionSyntax> arguments = Arguments(node, variables, out List<ReceiverParam> listInputs);
-            ExpressionSyntax expression = Expression(node as dynamic, arguments);
+            ExpressionSyntax expression = IExpression(node, arguments);
 
             expression = HandleTypeDifferences(node, expression, variables, listInputs, out List<StatementSyntax> extraStatements);
 
@@ -103,21 +108,58 @@ namespace BH.Engine.Node2Code
             List<ExpressionSyntax> arguments = inputs.Select(x => Query.ArgumentValue(x, variables)).ToList();
 
             listInputs = inputs.Where(x => x.DepthDifference(variables) == -1).ToList();
+
+            // This method is becoming a bit of a mess and needs refactoring
+
             if (listInputs.Count == 1)
-                arguments[inputs.IndexOf(listInputs.First())] = SyntaxFactory.IdentifierName("_x");
+            {
+                MemberAccessExpressionSyntax memberAccess = arguments[inputs.IndexOf(listInputs.First())] as MemberAccessExpressionSyntax;
+                if (memberAccess != null)
+                    arguments[inputs.IndexOf(listInputs.First())] = SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName("_x"),
+                        memberAccess.Name
+                    );
+                else
+                    arguments[inputs.IndexOf(listInputs.First())] = SyntaxFactory.IdentifierName("_x");
+            }
             else if (listInputs.Count > 1)
             {
-                foreach (ReceiverParam receiver in listInputs)
+                Dictionary<int, Tuple<ExpressionSyntax, SimpleNameSyntax>> listArguments = listInputs.ToDictionary(
+                    x => inputs.IndexOf(x),
+                    x =>
+                    {
+                        MemberAccessExpressionSyntax memberAccess = arguments[inputs.IndexOf(x)] as MemberAccessExpressionSyntax;
+                        if (memberAccess != null)
+                            return new Tuple<ExpressionSyntax, SimpleNameSyntax>(memberAccess.Expression, memberAccess.Name);
+                        else
+                            return new Tuple<ExpressionSyntax, SimpleNameSyntax>(arguments[inputs.IndexOf(x)], null);
+                    }
+                );
+                bool switchToSelect = (listArguments.Values.Select(x => x.Item1.ToFullString()).Distinct().Count() == 1);
+
+                foreach (var kvp in listArguments)
                 {
-                    arguments[inputs.IndexOf(receiver)] = SyntaxFactory.ElementAccessExpression(
-                        arguments[inputs.IndexOf(receiver)],
-                        SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(new List<ArgumentSyntax>
-                        {
-                            SyntaxFactory.Argument(SyntaxFactory.IdentifierName("_i")) 
-                        }))
-                    );
+                    if (switchToSelect)
+                        arguments[kvp.Key] = SyntaxFactory.IdentifierName("_x");
+                    else
+                        arguments[kvp.Key] = SyntaxFactory.ElementAccessExpression(
+                            kvp.Value.Item1,
+                            SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(new List<ArgumentSyntax>
+                            {
+                            SyntaxFactory.Argument(SyntaxFactory.IdentifierName("_i"))
+                            }))
+                        );
+
+                    if (kvp.Value.Item2 != null)
+                    {
+                        arguments[kvp.Key] = SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            arguments[kvp.Key],
+                            kvp.Value.Item2
+                        );
+                    }
                 }
-                    
             }
 
             return arguments;
@@ -131,7 +173,13 @@ namespace BH.Engine.Node2Code
 
             if (listInputs.Count > 0)
             {
-                if (listInputs.Count == 1)
+                int count = listInputs.Count;
+                List<ExpressionSyntax> arguments = listInputs.Select(x => ArgumentValue(x, variables)).ToList();
+                List<MemberAccessExpressionSyntax> memberAccess = arguments.OfType<MemberAccessExpressionSyntax>().ToList();
+                if (memberAccess.Count > 0)
+                    count -= memberAccess.Count - memberAccess.Select(x => x.Expression.ToFullString()).Distinct().Count();
+
+                if (count == 1)
                 {
                     if (node.IsDeclaration)
                         expression = SelectLoop(expression, variables, listInputs);
@@ -144,9 +192,12 @@ namespace BH.Engine.Node2Code
                     extraStatements.Add(loopStatement);
                 }
                     
-
-                if (node.Outputs.Count > 0 && !(node is SetPropertyNode)) // need a better way to do this
-                    PromoteToList(variables, node.Outputs.First().BHoM_Guid);
+                if (!(node is SetPropertyNode)) // need a better way to do this
+                {
+                    foreach (DataParam output in node.Outputs)
+                        PromoteToList(variables, output.BHoM_Guid);
+                }
+                    
             }
 
             return expression;
@@ -160,7 +211,11 @@ namespace BH.Engine.Node2Code
 
             var lambda = SyntaxFactory.SimpleLambdaExpression(SyntaxFactory.Parameter(SyntaxFactory.Identifier("_x")), expression);
 
-            var selectAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, Query.ArgumentValue(input, variables), SyntaxFactory.IdentifierName("Select"));
+            var selectedTarget = Query.ArgumentValue(input, variables);
+            if (selectedTarget is MemberAccessExpressionSyntax)
+                selectedTarget = ((MemberAccessExpressionSyntax)selectedTarget).Expression;
+
+            var selectAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, selectedTarget, SyntaxFactory.IdentifierName("Select"));
             var selectInvoc = SyntaxFactory.InvocationExpression(selectAccess, SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new List<ArgumentSyntax> { SyntaxFactory.Argument(lambda) })));
 
             var toListAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, selectInvoc, SyntaxFactory.IdentifierName("ToList"));
@@ -175,7 +230,11 @@ namespace BH.Engine.Node2Code
 
             var lambda = SyntaxFactory.SimpleLambdaExpression(SyntaxFactory.Parameter(SyntaxFactory.Identifier("_x")), expression);
 
-            var foreachAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, Query.ArgumentValue(input, variables), SyntaxFactory.IdentifierName("ForEach"));
+            var loopTarget = Query.ArgumentValue(input, variables);
+            if (loopTarget is MemberAccessExpressionSyntax)
+                loopTarget = ((MemberAccessExpressionSyntax)loopTarget).Expression;
+
+            var foreachAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, loopTarget, SyntaxFactory.IdentifierName("ForEach"));
             return SyntaxFactory.InvocationExpression(foreachAccess, SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new List<ArgumentSyntax> { SyntaxFactory.Argument(lambda) })));
         }
 
@@ -183,8 +242,6 @@ namespace BH.Engine.Node2Code
 
         private static ExpressionSyntax ForLoop(INode node, ExpressionSyntax expression, Dictionary<Guid, Variable> variables, List<ReceiverParam> listInputs, out StatementSyntax loopStatement)
         {
-            Type outputType = variables[node.Outputs.First().BHoM_Guid].Type;
-
             var addAccess = SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression, 
                 SyntaxFactory.IdentifierName(node.Outputs.First().Name), 
@@ -205,8 +262,8 @@ namespace BH.Engine.Node2Code
             );
             SeparatedSyntaxList<ExpressionSyntax> initialisers = SyntaxFactory.SeparatedList(new List<ExpressionSyntax>());
 
-            ExpressionSyntax maxLimit = MinCountExpression(listInputs.Select(x => ArgumentValue(x, variables)).ToList());
-            ExpressionSyntax condition = SyntaxFactory.BinaryExpression(SyntaxKind.LessThanExpression, SyntaxFactory.IdentifierName("_i"), maxLimit);
+            ExpressionSyntax minLimit = MinCountExpression(listInputs.Select(x => ArgumentValue(x, variables)).ToList());
+            ExpressionSyntax condition = SyntaxFactory.BinaryExpression(SyntaxKind.LessThanExpression, SyntaxFactory.IdentifierName("_i"), minLimit);
 
             SeparatedSyntaxList<ExpressionSyntax> incrementors = SyntaxFactory.SeparatedList(new List<ExpressionSyntax>
             {
@@ -216,13 +273,18 @@ namespace BH.Engine.Node2Code
             loopStatement = SyntaxFactory.ForStatement(declaration, initialisers, condition, incrementors, body);
 
 
-            return SyntaxFactory.ObjectCreationExpression(SyntaxFactory.ParseTypeName(outputType.MethodName()), null, null);
+            return SyntaxFactory.InvocationExpression(SyntaxFactory.ObjectCreationExpression(node.ReturnType(1), null, null));
         }
 
         /***************************************************/
 
         private static ExpressionSyntax MinCountExpression(List<ExpressionSyntax> lists)
         {
+            lists = lists.Select(x => x is MemberAccessExpressionSyntax ? ((MemberAccessExpressionSyntax)x).Expression : x)
+                .GroupBy(x => x.ToFullString())
+                .Select(x => x.First())
+                .ToList();
+
             List<ArgumentSyntax> arguments = lists.Select(list =>
             {
                 var countAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, list, SyntaxFactory.IdentifierName("Count"));

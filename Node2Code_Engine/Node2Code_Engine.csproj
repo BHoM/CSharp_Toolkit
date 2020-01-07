@@ -105,7 +105,6 @@
     <Compile Include="Query\OutputVariable.cs" />
     <Compile Include="Query\Children.cs" />
     <Compile Include="Query\Expression.cs" />
-    <Compile Include="Query\Statement.cs" />
     <Compile Include="Query\SyntaxToken.cs" />
     <Compile Include="Query\DepthDifference.cs" />
     <Compile Include="Query\Statements.cs" />

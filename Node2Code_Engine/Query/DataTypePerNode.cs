@@ -38,9 +38,6 @@ namespace BH.Engine.Node2Code
             foreach (ReceiverParam output in content.Outputs)
                 types[output.BHoM_Guid] = output.DataType;
 
-            foreach (DataParam intern in content.InternalParams)
-                types[intern.BHoM_Guid] = intern.DataType;
-
             foreach (INode child in content.InternalNodes)
             {
                 Dictionary<Guid, Type> childTypes = child.IDataTypePerNode();
