@@ -45,6 +45,10 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.4.0-beta4-final\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Programming_oM">
+      <HintPath>..\..\BHoM\Build\Programming_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -80,27 +84,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Nodes\LibraryNode.cs" />
-    <Compile Include="Nodes\ParamNode.cs" />
-    <Compile Include="Nodes\LoopNode.cs" />
-    <Compile Include="Nodes\BlockNode.cs" />
-    <Compile Include="Nodes\CustomObjectNode.cs" />
-    <Compile Include="Nodes\SetPropertyNode.cs" />
-    <Compile Include="Nodes\GetPropertyNode.cs" />
-    <Compile Include="Nodes\ExplodeNode.cs" />
-    <Compile Include="Nodes\TypeNode.cs" />
-    <Compile Include="Nodes\InitialiserNode.cs" />
-    <Compile Include="Nodes\ConstructorNode.cs" />
-    <Compile Include="Others\ClusterContent.cs" />
     <Compile Include="Others\StatementInfo.cs" />
-    <Compile Include="Others\NodeGroup.cs" />
     <Compile Include="Others\Variable.cs" />
-    <Compile Include="Params\INodeParam.cs" />
-    <Compile Include="Nodes\INode.cs" />
-    <Compile Include="Nodes\ClusterNode.cs" />
-    <Compile Include="Nodes\MethodNode.cs" />
-    <Compile Include="Params\DataParam.cs" />
-    <Compile Include="Params\ReceiverParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

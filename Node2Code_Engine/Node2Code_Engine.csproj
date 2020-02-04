@@ -48,11 +48,21 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.4.0-beta3-final\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Programming_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Programming_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Programming_oM">
+      <HintPath>..\..\BHoM\Build\Programming_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -93,7 +103,6 @@
     <Compile Include="Compute\Variables.cs" />
     <Compile Include="Compute\NodeSequence.cs" />
     <Compile Include="Compute\ApplyGroups.cs" />
-    <Compile Include="Compute\PopulateTypes.cs" />
     <Compile Include="Convert\ToCSharpText.cs" />
     <Compile Include="Convert\ToCSharpSyntaxNode.cs" />
     <Compile Include="Create\LoopStatement.cs" />
@@ -117,12 +126,12 @@
     <Compile Include="Query\ArgumentValue.cs" />
     <Compile Include="Query\ReturnType.cs" />
     <Compile Include="Query\MethodParameters.cs" />
-    <Compile Include="Query\DataTypePerNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Node2Code_oM\Node2Code_oM.csproj">
       <Project>{e35fd3cf-5b58-49c2-b44a-e97f656f009b}</Project>
       <Name>Node2Code_oM</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
