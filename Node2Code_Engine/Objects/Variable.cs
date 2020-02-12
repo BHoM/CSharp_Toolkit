@@ -20,11 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Node2Code.Objects;
-using BH.Engine.Reflection;
-using BH.oM.Programming;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+using BH.oM.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
@@ -33,46 +29,19 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.Node2Code.Objects
 {
-    public static partial class Query
+    public class Variable : BHoMObject
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Properties                                ****/
         /***************************************************/
 
-        public static List<Variable> IOutputVariables(this INode node, Dictionary<Guid, Variable> variables)
-        {
-            return OutputVariables(node as dynamic, variables);
-        }
+        public Type Type { get; set; }
 
-        /***************************************************/
+        public ExpressionSyntax Expression { get; set; }
 
-        public static List<Variable> OutputVariables(this SetPropertyNode node, Dictionary<Guid, Variable> variables)
-        {
-            if (node.Inputs.Count == 0)
-                return new List<Variable>();
-
-            Guid id = node.Inputs.First().SourceId;
-            if (variables.ContainsKey(id))
-            {
-                variables[node.Outputs.First().BHoM_Guid] = variables[id];
-                return new List<Variable> { variables[id] };
-            }
-            else
-                return new List<Variable>();
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        public static List<Variable> OutputVariables(this INode node, Dictionary<Guid, Variable> variables)
-        {
-            return node.Outputs.Where(x => x.TargetIds.Count > 0 && variables.ContainsKey(x.BHoM_Guid))
-                .Select(x => variables[node.Outputs.First().BHoM_Guid]).ToList();
-        }
+        public Guid SourceId { get; set; } = Guid.Empty;
 
         /***************************************************/
     }
