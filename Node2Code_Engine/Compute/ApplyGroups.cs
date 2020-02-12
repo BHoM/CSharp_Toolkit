@@ -22,8 +22,10 @@
 
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -37,14 +39,21 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Replace groups of nodes into block nodes")]
+        [Input("nodes", "Flat list of nodes that need to be grouped")]
+        [Input("groups", "Defines how the nodes should be grouped")]
+        [Output("New list where the grouped nodes are now contained in block nodes")]
         public static List<INode> ApplyGroups(this List<INode> nodes, List<NodeGroup> groups)
         {
-            Dictionary<Guid, INode> nodeDictionary = nodes.ToDictionary(x => x.BHoM_Guid, x => x);
+            if (nodes == null || groups == null)
+                return new List<INode>();
+
+            Dictionary<Guid, INode> nodeDictionary = nodes.Where(x => x != null).ToDictionary(x => x.BHoM_Guid, x => x);
 
             List<INode> result = new List<INode>();
             List<Guid> coveredChildren = new List<Guid>();
 
-            foreach (NodeGroup group in groups)
+            foreach (NodeGroup group in groups.Where(x => x != null))
             {
                 BlockNode block = ApplyGroup(nodeDictionary, group);
                 result.Add(block);

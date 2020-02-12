@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="Library_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Library_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=3.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.4.0-beta3-final\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
@@ -99,33 +100,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\ApplyLoops.cs" />
     <Compile Include="Compute\Variables.cs" />
     <Compile Include="Compute\NodeSequence.cs" />
     <Compile Include="Compute\ApplyGroups.cs" />
     <Compile Include="Convert\ToCSharpText.cs" />
     <Compile Include="Convert\ToCSharpSyntaxNode.cs" />
-    <Compile Include="Create\LoopStatement.cs" />
-    <Compile Include="Create\Variable.cs" />
-    <Compile Include="Create\ReturnStatement.cs" />
-    <Compile Include="Objects\BodyState.cs" />
     <Compile Include="Objects\NodeState.cs" />
     <Compile Include="Objects\ReceiverState.cs" />
-    <Compile Include="Query\OutputVariable.cs" />
     <Compile Include="Query\Children.cs" />
     <Compile Include="Query\Expression.cs" />
     <Compile Include="Query\SyntaxToken.cs" />
     <Compile Include="Query\DepthDifference.cs" />
     <Compile Include="Query\Statements.cs" />
-    <Compile Include="Modify\AddComments.cs" />
-    <Compile Include="Modify\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\InlineExpression.cs" />
-    <Compile Include="Query\MethodName.cs" />
+    <Compile Include="Query\OutputVariables.cs" />
     <Compile Include="Query\Body.cs" />
     <Compile Include="Query\ArgumentValue.cs" />
     <Compile Include="Query\ReturnType.cs" />
-    <Compile Include="Query\MethodParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Node2Code_oM\Node2Code_oM.csproj">
@@ -140,6 +131,10 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.6\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.6\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Create\" />
+    <Folder Include="Modify\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -22,11 +22,13 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Node2Code;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -40,6 +42,9 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the C# syntax token corresponding to a variable")]
+        [Input("variable", "Variable to get the token from")]
+        [Output("Microsoft.CodeAnalysis.CSharp.SyntaxToken corresponding to the variable")]
         public static SyntaxToken SyntaxToken(this Variable variable)
         {
             if (variable == null || variable.Expression == null)

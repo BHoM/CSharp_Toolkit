@@ -23,8 +23,10 @@
 using BH.Engine.Node2Code.Objects;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -38,6 +40,9 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Order the nodes in a sequence where each node appears after all its inputs")]
+        [Input("nodes", "List of nodes to order")]
+        [Output("Ordered list of nodes")]
         public static List<INode> NodeSequence(this List<INode> nodes)
         {
             // Create the receivers states & and node states
@@ -75,11 +80,11 @@ namespace BH.Engine.Node2Code
 
         private static Dictionary<Guid, ReceiverState> ReceiverStates(List<INode> nodes)
         {
-            List<Guid> emiters = nodes.SelectMany(n => n.Outputs.Where(x => x.TargetIds.Count > 0)).Select(x => x.BHoM_Guid).ToList();
+            List<Guid> emitters = nodes.SelectMany(n => n.Outputs.Where(x => x.TargetIds.Count > 0)).Select(x => x.BHoM_Guid).ToList();
 
             return nodes
                 .SelectMany(x => x.Inputs)
-                .Where(x => x.BHoM_Guid != Guid.Empty && emiters.Contains(x.SourceId))
+                .Where(x => x.BHoM_Guid != Guid.Empty && emitters.Contains(x.SourceId))
                 .ToDictionary(x => x.BHoM_Guid, x => new ReceiverState { Receiver = x, Reached = x.SourceId == Guid.Empty });
         }
 
@@ -107,9 +112,9 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        private static List<ReceiverState> NextReceivers(List<DataParam> emiters, Dictionary<Guid, ReceiverState> receiversState)
+        private static List<ReceiverState> NextReceivers(List<DataParam> emitters, Dictionary<Guid, ReceiverState> receiversState)
         {
-            return emiters.SelectMany(x => x.TargetIds).Distinct()
+            return emitters.SelectMany(x => x.TargetIds).Distinct()
                 .Where(x => receiversState.ContainsKey(x))
                 .Select(x => receiversState[x])
                 .ToList();

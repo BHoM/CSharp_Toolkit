@@ -22,11 +22,13 @@
 
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -40,12 +42,23 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Convert a BHoM Cluster content into C# code")]
+        [Input("content", "Cluster content to convert")]
+        [Output("Corresponding C# code")]
         public static string ToCSharpText(this ClusterContent content)
         {
             if (content == null)
                 return "";
 
-            return content.ToCSharpSyntaxNode().NormalizeWhitespace().ToFullString();
+            CSharpSyntaxNode cSharpNode = content.ToCSharpSyntaxNode();
+
+            if (cSharpNode == null)
+            {
+                Engine.Reflection.Compute.RecordError("failed to convert the cluster content into a CSharp syntax node.");
+                return "";
+            }   
+            else
+                return cSharpNode.NormalizeWhitespace().ToFullString();
         }
 
 

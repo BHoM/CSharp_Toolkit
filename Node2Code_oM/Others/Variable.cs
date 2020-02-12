@@ -24,6 +24,7 @@ using BH.oM.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -31,16 +32,20 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Node2Code
 {
+    [Description("Represents a code variable in the context of a BHoM abstract syntax tree.")]
     public class Variable : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public Type Type { get; set; }
+        [Description("System.Type of the variable")]
+        public Type Type { get; set; } = typeof(object);
 
-        public ExpressionSyntax Expression { get; set; }
+        [Description("C# syntax representation of the variable")]
+        public ExpressionSyntax Expression { get; set; } = null;
 
+        [Description("Id of the node parameter that generated this variable")]
         public Guid SourceId { get; set; } = Guid.Empty;
 
         /***************************************************/

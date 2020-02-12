@@ -23,11 +23,13 @@
 using BH.Engine.Reflection;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,11 +43,17 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, DataParam> emiters)
+        [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
+            "\nThe depth represents the number of list levels are wrapped around the underlying type." +
+            "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
+        [Input("emiters", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Output("receiver.Depth - receiver.Source.Depth")]
+        public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, DataParam> emitters)
         {
-            if (emiters.ContainsKey(receiver.SourceId))
+            if (emitters.ContainsKey(receiver.SourceId))
             {
-                return DepthDifference(receiver.DataType, emiters[receiver.SourceId].DataType);
+                return DepthDifference(receiver.DataType, emitters[receiver.SourceId].DataType);
             }
             else
                 return 0;
@@ -53,6 +61,12 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
+        [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
+        "\nThe depth represents the number of list levels are wrapped around the underlying type." +
+        "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
+        [Input("variables", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Output("receiver.Depth - receiver.Source.Depth")]
         public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {
             if (variables.ContainsKey(receiver.SourceId))
@@ -63,9 +77,12 @@ namespace BH.Engine.Node2Code
                 return 0;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static int DepthDifference(this Type t1, Type t2)
+        private static int DepthDifference(this Type t1, Type t2)
         {
             return t1.UnderlyingType().Depth - t2.UnderlyingType().Depth;
         }

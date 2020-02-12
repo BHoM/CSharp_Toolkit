@@ -24,11 +24,13 @@ using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -42,14 +44,21 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the C# expression corresponding to a node given a list of available input expressions")]
+        [Input("node", "Node to get the expression from")]
+        [Input("inputs", "List of input expressions available in the context of the node")]
+        [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the node")]
         public static ExpressionSyntax IExpression(this INode node, List<ExpressionSyntax> inputs)
         {
             return Expression(node as dynamic, inputs);
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this MethodNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this MethodNode node, List<ExpressionSyntax> inputs)
         {
             string methodName = node.Method.MethodName();
 
@@ -70,7 +79,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this ConstructorNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this ConstructorNode node, List<ExpressionSyntax> inputs)
         {
             List<ArgumentSyntax> arguments = inputs.Select(x => SyntaxFactory.Argument(x)).ToList();
             ArgumentListSyntax argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments));
@@ -87,7 +96,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this InitialiserNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this InitialiserNode node, List<ExpressionSyntax> inputs)
         {
             var arguments = node.Inputs.Take(inputs.Count)
                 .Zip(inputs, (a, b) => new Tuple<ReceiverParam, ExpressionSyntax>(a, b))
@@ -107,7 +116,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this SetPropertyNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this SetPropertyNode node, List<ExpressionSyntax> inputs)
         {
             if (inputs.Count < 3)
                 return null;
@@ -123,7 +132,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this CustomObjectNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this CustomObjectNode node, List<ExpressionSyntax> inputs)
         {
             var arguments = node.Inputs.Take(inputs.Count)
                 .Zip(inputs, (a, b) => new Tuple<ReceiverParam, ExpressionSyntax>(a, b))
@@ -158,7 +167,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this LibraryNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this LibraryNode node, List<ExpressionSyntax> inputs)
         {
             string dataName = "";
             if (node.Outputs.Count > 0)
@@ -173,19 +182,16 @@ namespace BH.Engine.Node2Code
             return SyntaxFactory.InvocationExpression(SyntaxFactory.IdentifierName("BH.Engine.Library.Query.Match"), argumentList);
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static ExpressionSyntax Expression(this INode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax Expression(this INode node, List<ExpressionSyntax> inputs)
         {
             return null;
         }
 
         /***************************************************/
 
-        public static ExpressionSyntax StaticMethodExpression(this MethodNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax StaticMethodExpression(this MethodNode node, List<ExpressionSyntax> inputs)
         {
             List<ArgumentSyntax> arguments = inputs.Select(x => SyntaxFactory.Argument(x)).ToList();
             ArgumentListSyntax argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments));
@@ -195,7 +201,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static ExpressionSyntax InstanceMethodExpression(this MethodNode node, List<ExpressionSyntax> inputs)
+        private static ExpressionSyntax InstanceMethodExpression(this MethodNode node, List<ExpressionSyntax> inputs)
         {
             List<ArgumentSyntax> arguments = inputs.Skip(1).Select(x => SyntaxFactory.Argument(x)).ToList();
             ArgumentListSyntax argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments));
@@ -206,6 +212,27 @@ namespace BH.Engine.Node2Code
                 SyntaxFactory.IdentifierName(node.Method.Name)
             );
             return SyntaxFactory.InvocationExpression(memberAccess, argumentList);
+        }
+
+        /***************************************************/
+
+        private static string MethodName(this MethodInfo method)
+        {
+            return method.DeclaringType.FullName + "." + method.Name;
+        }
+
+        /***************************************************/
+
+        private static string MethodName(this ConstructorInfo constructor)
+        {
+            return constructor.DeclaringType.FullName;
+        }
+
+        /***************************************************/
+
+        private static string MethodName(this Type type)
+        {
+            return type.FullName;
         }
 
         /***************************************************/

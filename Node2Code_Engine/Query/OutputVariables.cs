@@ -23,11 +23,13 @@
 using BH.Engine.Reflection;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,14 +43,21 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> IInlineExpression(this INode node, Dictionary<Guid, Variable> variables)
+        [Description("Get the C# inline expressions corresponding to a node outputs given a list of available variables")]
+        [Input("node", "Node to get the expression from")]
+        [Input("variables", "List of variables available in the context of the node")]
+        [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the node")]
+        public static Dictionary<Guid, Variable> IOutputVariables(this INode node, Dictionary<Guid, Variable> variables)
         {
-            return InlineExpression(node as dynamic, variables);
+            return OutputVariables(node as dynamic, variables);
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> InlineExpression(this TypeNode node, Dictionary<Guid, Variable> variables)
+        private static Dictionary<Guid, Variable> OutputVariables(this TypeNode node, Dictionary<Guid, Variable> variables)
         {
             Guid id = node.Outputs.First().BHoM_Guid;
 
@@ -66,7 +75,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> InlineExpression(this ParamNode node, Dictionary<Guid, Variable> variables)
+        private static Dictionary<Guid, Variable> OutputVariables(this ParamNode node, Dictionary<Guid, Variable> variables)
         {
             Dictionary<Guid, Variable> newVariables = new Dictionary<Guid, Variable>();
 
@@ -96,7 +105,7 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> InlineExpression(this GetPropertyNode node, Dictionary<Guid, Variable> variables)
+        private static Dictionary<Guid, Variable> OutputVariables(this GetPropertyNode node, Dictionary<Guid, Variable> variables)
         {
             List<ExpressionSyntax> arguments = node.Inputs.Select(x => Query.ArgumentValue(x, variables)).ToList();
 
@@ -120,7 +129,21 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> InlineExpression(this ExplodeNode node, Dictionary<Guid, Variable> variables)
+        private static Dictionary<Guid, Variable> OutputVariables(this SetPropertyNode node, Dictionary<Guid, Variable> variables)
+        {
+            if (node.Inputs.Count == 0)
+                return new Dictionary<Guid, Variable>();
+
+            Guid id = node.Inputs.First().SourceId;
+            if (variables.ContainsKey(id))
+                return new Dictionary<Guid, Variable> { { node.Outputs.First().BHoM_Guid, variables[id] } };
+            else
+                return new Dictionary<Guid, Variable>();
+        }
+
+        /***************************************************/
+
+        private static Dictionary<Guid, Variable> OutputVariables(this ExplodeNode node, Dictionary<Guid, Variable> variables)
         {
             List<ExpressionSyntax> arguments = node.Inputs.Select(x => Query.ArgumentValue(x, variables)).ToList();
 
@@ -143,14 +166,12 @@ namespace BH.Engine.Node2Code
                 );
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static Dictionary<Guid, Variable> InlineExpression(this INode node, Dictionary<Guid, Variable> variables)
+        private static Dictionary<Guid, Variable> OutputVariables(this INode node, Dictionary<Guid, Variable> variables)
         {
-            return new Dictionary<Guid, Variable>();
+            return node.Outputs.Where(x => x.TargetIds.Count > 0 && variables.ContainsKey(x.BHoM_Guid))
+                .ToDictionary(x => x.BHoM_Guid, x => variables[node.Outputs.First().BHoM_Guid]);
         }
 
         /***************************************************/

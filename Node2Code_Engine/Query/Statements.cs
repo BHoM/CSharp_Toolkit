@@ -25,11 +25,13 @@ using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -43,14 +45,19 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<StatementInfo> IStatements(this INode node, Dictionary<Guid, Variable> variables, int depth = 0)
+        [Description("Get the list of C# statements corresponding to a node given a list of available variables")]
+        [Input("node", "Node to get the statements from")]
+        [Input("variables", "List of variables available in the context of the node")]
+        [Input("depth", "Optional input defining how many groups are wrapping this node")]
+        [Output("Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the node")]
+        public static List<StatementSyntax> IStatements(this INode node, Dictionary<Guid, Variable> variables, int depth = 0)
         {
             if (node.IsInline)
             {
                 List<ExpressionSyntax> arguments = Arguments(node, variables, out List<ReceiverParam> listInputs);
                 if (listInputs.Count > 0 && !(node is SetPropertyNode)) // need a better way to do this
                     node.Outputs.ForEach(output => PromoteToList(variables, output.BHoM_Guid));
-                return new List<StatementInfo>();
+                return new List<StatementSyntax>();
             }
             else if (node is BlockNode)
                 return Statements(node as BlockNode, variables, depth);
@@ -63,15 +70,15 @@ namespace BH.Engine.Node2Code
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static List<StatementInfo> Statements(this BlockNode node, Dictionary<Guid, Variable> variables, int depth = 0)
+        private static List<StatementSyntax> Statements(this BlockNode node, Dictionary<Guid, Variable> variables, int depth = 0)
         {
             string commentLead = new string(Enumerable.Repeat('-', 4 * depth).ToArray());
 
-            List<StatementInfo> statements = node.InternalNodes.SelectMany(x => x.IStatements(variables, depth + 1)).Where(x => x != null).ToList();
+            List<StatementSyntax> statements = node.InternalNodes.SelectMany(x => x.IStatements(variables, depth + 1)).Where(x => x != null).ToList();
 
             if (statements.Count > 0)
             {
-                StatementSyntax statement = statements[0].Statement;
+                StatementSyntax statement = statements[0];
                 if (statement.HasLeadingTrivia)
                 {
                     SyntaxTriviaList trivia = statement.GetLeadingTrivia();
@@ -79,11 +86,11 @@ namespace BH.Engine.Node2Code
                         SyntaxFactory.Comment(" "),
                         SyntaxFactory.Comment("//" + commentLead + " " + node.Description)
                     });
-                    statements[0].Statement = statement.WithLeadingTrivia(trivia);
+                    statements[0] = statement.WithLeadingTrivia(trivia);
                 }
                 else
                 {
-                    statements[0].Statement = statements[0].Statement.WithLeadingTrivia(
+                    statements[0] = statements[0].WithLeadingTrivia(
                         SyntaxFactory.Comment(" "),
                         SyntaxFactory.Comment("//" + commentLead + " " + node.Description)
                     );
@@ -95,28 +102,29 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static List<StatementInfo> Statements(this INode node, Dictionary<Guid, Variable> variables)
+        private static List<StatementSyntax> Statements(this INode node, Dictionary<Guid, Variable> variables)
         {
-            List<Variable> outputVariables = node.IOutputVariables(variables);
+            Dictionary<Guid, Variable> outputVariables = node.IOutputVariables(variables);
+            foreach (KeyValuePair<Guid, Variable> kvp in outputVariables)
+                variables[kvp.Key] = kvp.Value;
+
             List<ExpressionSyntax> arguments = Arguments(node, variables, out List<ReceiverParam> listInputs);
             ExpressionSyntax expression = IExpression(node, arguments);
 
             expression = HandleTypeDifferences(node, expression, variables, listInputs, out List<StatementSyntax> extraStatements);
 
             if (expression == null)
-                return new List<StatementInfo>();
+                return new List<StatementSyntax>();
             else if (node.IsDeclaration && outputVariables.Count > 0)
             {
-                TypeSyntax returnType = node.ReturnType(listInputs.Count > 0 ? 1 : 0);
-                List<StatementSyntax> statements = new List<StatementSyntax> { Declaration(expression, outputVariables, returnType) };
-                return statements.Concat(extraStatements).Select(x => new StatementInfo { Statement = x }).ToList();
+                TypeSyntax returnType = node.IReturnType(listInputs.Count > 0 ? 1 : 0);
+                List<StatementSyntax> statements = new List<StatementSyntax> { Declaration(expression, outputVariables.Values.ToList(), returnType) };
+                return statements.Concat(extraStatements).ToList();
             }
             else
             {
-                return new List<StatementInfo> {
-                    new StatementInfo {
-                        Statement = SyntaxFactory.ExpressionStatement(expression)
-                    }
+                return new List<StatementSyntax> {
+                    SyntaxFactory.ExpressionStatement(expression)
                 };
             }
         }
@@ -296,7 +304,7 @@ namespace BH.Engine.Node2Code
             loopStatement = SyntaxFactory.ForStatement(declaration, initialisers, condition, incrementors, body);
 
 
-            return SyntaxFactory.InvocationExpression(SyntaxFactory.ObjectCreationExpression(node.ReturnType(1), null, null));
+            return SyntaxFactory.InvocationExpression(SyntaxFactory.ObjectCreationExpression(node.IReturnType(1), null, null));
         }
 
         /***************************************************/

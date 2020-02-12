@@ -23,11 +23,13 @@
 using BH.Engine.Reflection;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,6 +43,9 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the C# type syntax corresponding to the first output of a cluster content")]
+        [Input("content", "Cluster content to get the type syntax from")]
+        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the content first output")]
         public static TypeSyntax ReturnType(this ClusterContent content)
         {
             string returnTypeString = "void";
@@ -52,7 +57,11 @@ namespace BH.Engine.Node2Code
 
         /***************************************************/
 
-        public static TypeSyntax ReturnType(this INode node, int depth = 0)
+        [Description("Get the C# type syntax corresponding to the first output of a node")]
+        [Input("node", "node to get the type syntax from")]
+        [Input("depth", "number of list levels the return type needs to be wrapped into")]
+        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the node first output")]
+        public static TypeSyntax IReturnType(this INode node, int depth = 0)
         {
             string returnTypeString = "void";
             if (node.Outputs.Count > 0)

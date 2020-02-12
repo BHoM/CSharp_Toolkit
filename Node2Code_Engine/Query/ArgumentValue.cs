@@ -23,11 +23,13 @@
 using BH.Engine.Reflection;
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,6 +43,10 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the C# expression corresponding to a receiver param given a list of available variables")]
+        [Input("receiver", "Input of a node we need the C# expression for")]
+        [Input("variables", "Variables available in the context of the receiver param")]
+        [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the receiver parameter")]
         public static ExpressionSyntax ArgumentValue(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {
             if (receiver.SourceId == Guid.Empty)

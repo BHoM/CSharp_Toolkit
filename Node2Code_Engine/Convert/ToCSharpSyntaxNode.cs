@@ -22,11 +22,13 @@
 
 using BH.oM.Node2Code;
 using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -40,6 +42,9 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Convert a BHoM Cluster content into a Microsoft CSharp syntax node")]
+        [Input("content", "Cluster content to convert")]
+        [Output("Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode corresponding to the input BHoM content")]
         public static CSharpSyntaxNode ToCSharpSyntaxNode(this ClusterContent content)
         {
             MethodDeclarationSyntax methodDeclaration = SyntaxFactory.MethodDeclaration(content.ReturnType(), content.Name)
@@ -48,6 +53,26 @@ namespace BH.Engine.Node2Code
                 .AddBodyStatements(content.Body().ToArray());
 
             return methodDeclaration;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ParameterSyntax> MethodParameters(this ClusterContent content)
+        {
+            return content.Inputs.Select(input =>
+            {
+                return SyntaxFactory.Parameter
+                (
+                    new SyntaxList<AttributeListSyntax>(),
+                    new SyntaxTokenList(),
+                    SyntaxFactory.ParseTypeName(input.DataType.FullName),
+                    SyntaxFactory.Identifier(input.Name),
+                    null
+                );
+            }).ToList();
         }
 
         /***************************************************/
