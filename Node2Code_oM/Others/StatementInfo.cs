@@ -1,7 +1,4 @@
-﻿using BH.Engine.Reflection;
-using BH.oM.Programming;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using BH.oM.Base;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
@@ -10,19 +7,21 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code.Objects
+namespace BH.oM.Node2Code
 {
-    public class NodeState
+    public class StatementInfo : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public INode Node { get; set; }
+        public StatementSyntax Statement { get; set; } = null;
 
-        public List<ReceiverState> InputStates { get; set; } = new List<ReceiverState>();
+        public List<Guid> InputVariables { get; set; } = new List<Guid>();
 
-        public bool Processed { get; set; } = false;
+        public Guid OutputVariable { get; set; } = Guid.Empty;
+
+        public Guid GroupId { get; set; } = Guid.Empty;
 
         /***************************************************/
     }
