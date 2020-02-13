@@ -20,13 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Node2Code;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,33 +31,53 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# expression corresponding to a receiver param given a list of available variables")]
-        [Input("receiver", "Input of a node we need the C# expression for")]
-        [Input("variables", "Variables available in the context of the receiver param")]
-        [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the receiver parameter")]
-        public static ExpressionSyntax ArgumentValue(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
+        [Description("Replace groups of nodes into block nodes")]
+        [Input("nodes", "Flat list of nodes that need to be grouped")]
+        [Input("groups", "Defines how the nodes should be grouped")]
+        [Output("New list where the grouped nodes are now contained in block nodes")]
+        public static List<INode> ApplyGroups(this List<INode> nodes, List<NodeGroup> groups)
         {
-            if (receiver.SourceId == Guid.Empty)
+            if (nodes == null || groups == null)
+                return new List<INode>();
+
+            Dictionary<Guid, INode> nodeDictionary = nodes.Where(x => x != null).ToDictionary(x => x.BHoM_Guid, x => x);
+
+            List<INode> result = new List<INode>();
+            List<Guid> coveredChildren = new List<Guid>();
+
+            foreach (NodeGroup group in groups.Where(x => x != null))
             {
-                if (receiver.DefaultValue == null)
-                    return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
-                else if (receiver.DefaultValue is string)
-                    return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(receiver.DefaultValue.ToString()));
-                else
-                    return SyntaxFactory.IdentifierName(receiver.DefaultValue.ToString());
+                BlockNode block = ApplyGroup(nodeDictionary, group);
+                result.Add(block);
+                coveredChildren.AddRange(group.Children());
             }
-            else if (variables.ContainsKey(receiver.SourceId))
-                return variables[receiver.SourceId].Expression;
-            else
-                return SyntaxFactory.IdentifierName(receiver.Name);
+
+            IEnumerable<Guid> remainingNodes = nodeDictionary.Keys.Except(coveredChildren);
+            result.AddRange(remainingNodes.Select(x => nodeDictionary[x]));
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static BlockNode ApplyGroup(Dictionary<Guid, INode> nodes, NodeGroup group)
+        {
+            List<INode> content = group.NodeIds.Where(x => nodes.ContainsKey(x)).Select(x => nodes[x]).ToList();
+            content = content.Concat(group.InternalGroups.Select(x => ApplyGroup(nodes, x))).ToList();
+            content = NodeSequence(content);
+
+            return new BlockNode(content, group.Description);
         }
 
         /***************************************************/

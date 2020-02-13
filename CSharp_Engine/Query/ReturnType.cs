@@ -20,7 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
+using BH.Engine.Reflection;
+using BH.oM.CSharp;
+using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
@@ -30,23 +35,43 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Node2Code
+namespace BH.Engine.CSharp
 {
-    [Description("Represents a code variable in the context of a BHoM abstract syntax tree.")]
-    public class Variable : BHoMObject
+    public static partial class Query
     {
         /***************************************************/
-        /**** Properties                                ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("System.Type of the variable")]
-        public Type Type { get; set; } = typeof(object);
+        [Description("Get the C# type syntax corresponding to the first output of a cluster content")]
+        [Input("content", "Cluster content to get the type syntax from")]
+        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the content first output")]
+        public static TypeSyntax ReturnType(this ClusterContent content)
+        {
+            string returnTypeString = "void";
+            if (content.Outputs.Count > 0)
+                returnTypeString = content.Outputs.First().DataType.FullName;
 
-        [Description("C# syntax representation of the variable")]
-        public ExpressionSyntax Expression { get; set; } = null;
+            return SyntaxFactory.ParseTypeName(returnTypeString);
+        }
 
-        [Description("Id of the node parameter that generated this variable")]
-        public Guid SourceId { get; set; } = Guid.Empty;
+        /***************************************************/
+
+        [Description("Get the C# type syntax corresponding to the first output of a node")]
+        [Input("node", "node to get the type syntax from")]
+        [Input("depth", "number of list levels the return type needs to be wrapped into")]
+        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the node first output")]
+        public static TypeSyntax IReturnType(this INode node, int depth = 0)
+        {
+            string returnTypeString = "void";
+            if (node.Outputs.Count > 0)
+                returnTypeString = node.Outputs.First().DataType.ToText(true);
+
+            for (int i = 0; i < depth; i++)
+                returnTypeString = "List<" + returnTypeString + ">";
+
+            return SyntaxFactory.ParseTypeName(returnTypeString);
+        }
 
         /***************************************************/
     }

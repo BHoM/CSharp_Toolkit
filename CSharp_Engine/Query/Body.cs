@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Node2Code;
+using BH.Engine.CSharp.Objects;
+using BH.oM.Base;
+using BH.oM.CSharp;
+using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -34,7 +36,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
     public static partial class Query
     {
@@ -42,15 +44,43 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# syntax token corresponding to a variable")]
-        [Input("variable", "Variable to get the token from")]
-        [Output("Microsoft.CodeAnalysis.CSharp.SyntaxToken corresponding to the variable")]
-        public static SyntaxToken SyntaxToken(this Variable variable)
+        [Description("Get the C# statement syntax corresponding to the content of a cluster")]
+        [Input("content", "cluster content to get the statement syntax from")]
+        [Output("List of Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the input content")]
+        public static List<StatementSyntax> Body(this ClusterContent content)
         {
-            if (variable == null || variable.Expression == null)
-                return new SyntaxToken();
+            // Apply the groups
+            List<INode> nodes = Compute.ApplyGroups(content.InternalNodes, content.NodeGroups);
+
+            // Order the nodes 
+            nodes = Compute.NodeSequence(nodes);
+
+            // Get the variables
+            Dictionary<Guid, Variable> variables = Compute.Variables(nodes, content.Inputs);
+
+            // Create the statements
+            List<StatementSyntax> statements = nodes.Where(x => !x.IsInline)
+                .SelectMany(node => IStatements(node, variables))
+                .ToList();
+
+            // Add return statement
+            if (content.Outputs.Count > 0)
+                statements.Add(ReturnStatement(variables[content.Outputs.First().SourceId]));
+
+            return statements.ToList();
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static StatementSyntax ReturnStatement(Variable variable)
+        {
+            if (variable == null)
+                return SyntaxFactory.ReturnStatement().WithLeadingTrivia(SyntaxFactory.Comment(" "));
             else
-                return variable.Expression.GetFirstToken();
+                return SyntaxFactory.ReturnStatement(variable.Expression).WithLeadingTrivia(SyntaxFactory.Comment(" "));
         }
 
         /***************************************************/
