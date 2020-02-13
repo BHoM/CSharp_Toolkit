@@ -20,9 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Node2Code.Objects;
-using BH.oM.Base;
-using BH.oM.Node2Code;
+using BH.Engine.Reflection;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
@@ -36,7 +35,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
     public static partial class Query
     {
@@ -44,30 +43,38 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# statement syntax corresponding to the content of a cluster")]
-        [Input("content", "cluster content to get the statement syntax from")]
-        [Output("List of Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the input content")]
-        public static List<StatementSyntax> Body(this ClusterContent content)
+        [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
+            "\nThe depth represents the number of list levels are wrapped around the underlying type." +
+            "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
+        [Input("emiters", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Output("receiver.Depth - receiver.Source.Depth")]
+        public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, DataParam> emitters)
         {
-            // Apply the groups
-            List<INode> nodes = Compute.ApplyGroups(content.InternalNodes, content.NodeGroups);
+            if (emitters.ContainsKey(receiver.SourceId))
+            {
+                return DepthDifference(receiver.DataType, emitters[receiver.SourceId].DataType);
+            }
+            else
+                return 0;
+        }
 
-            // Order the nodes 
-            nodes = Compute.NodeSequence(nodes);
+        /***************************************************/
 
-            // Get the variables
-            Dictionary<Guid, Variable> variables = Compute.Variables(nodes, content.Inputs);
-
-            // Create the statements
-            List<StatementSyntax> statements = nodes.Where(x => !x.IsInline)
-                .SelectMany(node => IStatements(node, variables))
-                .ToList();
-
-            // Add return statement
-            if (content.Outputs.Count > 0)
-                statements.Add(ReturnStatement(variables[content.Outputs.First().SourceId]));
-
-            return statements.ToList();
+        [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
+        "\nThe depth represents the number of list levels are wrapped around the underlying type." +
+        "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
+        [Input("variables", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Output("receiver.Depth - receiver.Source.Depth")]
+        public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
+        {
+            if (variables.ContainsKey(receiver.SourceId))
+            {
+                return DepthDifference(receiver.DataType, variables[receiver.SourceId].Type);
+            }
+            else
+                return 0;
         }
 
 
@@ -75,12 +82,9 @@ namespace BH.Engine.Node2Code
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static StatementSyntax ReturnStatement(Variable variable)
+        private static int DepthDifference(this Type t1, Type t2)
         {
-            if (variable == null)
-                return SyntaxFactory.ReturnStatement().WithLeadingTrivia(SyntaxFactory.Comment(" "));
-            else
-                return SyntaxFactory.ReturnStatement(variable.Expression).WithLeadingTrivia(SyntaxFactory.Comment(" "));
+            return t1.UnderlyingType().Depth - t2.UnderlyingType().Depth;
         }
 
         /***************************************************/

@@ -20,47 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Node2Code;
+using BH.Engine.Reflection;
+using BH.oM.CSharp;
 using BH.oM.Programming;
-using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp.Objects
 {
-    public static partial class Convert
+    public class ReceiverState
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Convert a BHoM Cluster content into C# code")]
-        [Input("content", "Cluster content to convert")]
-        [Output("Corresponding C# code")]
-        public static string ToCSharpText(this ClusterContent content)
-        {
-            if (content == null)
-                return "";
+        public ReceiverParam Receiver { get; set; }
 
-            CSharpSyntaxNode cSharpNode = content.ToCSharpSyntaxNode();
+        public int DepthDifference { get; set; } = 0;
 
-            if (cSharpNode == null)
-            {
-                Engine.Reflection.Compute.RecordError("failed to convert the cluster content into a CSharp syntax node.");
-                return "";
-            }   
-            else
-                return cSharpNode.NormalizeWhitespace().ToFullString();
-        }
-
+        public bool Reached { get; set; } = false;
 
         /***************************************************/
     }

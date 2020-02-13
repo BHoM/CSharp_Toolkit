@@ -21,7 +21,7 @@
  */
 
 using BH.Engine.Reflection;
-using BH.oM.Node2Code;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
@@ -35,7 +35,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
     public static partial class Query
     {
@@ -43,34 +43,12 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# type syntax corresponding to the first output of a cluster content")]
-        [Input("content", "Cluster content to get the type syntax from")]
-        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the content first output")]
-        public static TypeSyntax ReturnType(this ClusterContent content)
+        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups)")]
+        [Input("group", "Group to get the children from")]
+        [Output("Ids of the children nodes")]
+        public static List<Guid> Children(this NodeGroup group)
         {
-            string returnTypeString = "void";
-            if (content.Outputs.Count > 0)
-                returnTypeString = content.Outputs.First().DataType.FullName;
-
-            return SyntaxFactory.ParseTypeName(returnTypeString);
-        }
-
-        /***************************************************/
-
-        [Description("Get the C# type syntax corresponding to the first output of a node")]
-        [Input("node", "node to get the type syntax from")]
-        [Input("depth", "number of list levels the return type needs to be wrapped into")]
-        [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the node first output")]
-        public static TypeSyntax IReturnType(this INode node, int depth = 0)
-        {
-            string returnTypeString = "void";
-            if (node.Outputs.Count > 0)
-                returnTypeString = node.Outputs.First().DataType.ToText(true);
-
-            for (int i = 0; i < depth; i++)
-                returnTypeString = "List<" + returnTypeString + ">";
-
-            return SyntaxFactory.ParseTypeName(returnTypeString);
+            return group.NodeIds.Concat(group.InternalGroups.SelectMany(x => x.Children())).ToList();
         }
 
         /***************************************************/

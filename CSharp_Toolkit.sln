@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Node2Code_oM", "Node2Code_oM\Node2Code_oM.csproj", "{E35FD3CF-5B58-49C2-B44A-E97F656F009B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp_oM", "CSharp_oM\CSharp_oM.csproj", "{E35FD3CF-5B58-49C2-B44A-E97F656F009B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Node2Code_Engine", "Node2Code_Engine\Node2Code_Engine.csproj", "{3FA232F2-1078-4682-B402-CE20B9665856}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp_Engine", "CSharp_Engine\CSharp_Engine.csproj", "{3FA232F2-1078-4682-B402-CE20B9665856}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Node2Code.Objects;
+using BH.Engine.CSharp.Objects;
 using BH.Engine.Reflection;
 using BH.oM.Base;
-using BH.oM.Node2Code;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
@@ -37,7 +37,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
     public static partial class Query
     {

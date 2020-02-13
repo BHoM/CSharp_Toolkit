@@ -20,9 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Node2Code;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,54 +34,33 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
-    public static partial class Compute
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Replace groups of nodes into block nodes")]
-        [Input("nodes", "Flat list of nodes that need to be grouped")]
-        [Input("groups", "Defines how the nodes should be grouped")]
-        [Output("New list where the grouped nodes are now contained in block nodes")]
-        public static List<INode> ApplyGroups(this List<INode> nodes, List<NodeGroup> groups)
+        [Description("Convert a BHoM Cluster content into C# code")]
+        [Input("content", "Cluster content to convert")]
+        [Output("Corresponding C# code")]
+        public static string ToCSharpText(this ClusterContent content)
         {
-            if (nodes == null || groups == null)
-                return new List<INode>();
+            if (content == null)
+                return "";
 
-            Dictionary<Guid, INode> nodeDictionary = nodes.Where(x => x != null).ToDictionary(x => x.BHoM_Guid, x => x);
+            CSharpSyntaxNode cSharpNode = content.ToCSharpSyntaxNode();
 
-            List<INode> result = new List<INode>();
-            List<Guid> coveredChildren = new List<Guid>();
-
-            foreach (NodeGroup group in groups.Where(x => x != null))
+            if (cSharpNode == null)
             {
-                BlockNode block = ApplyGroup(nodeDictionary, group);
-                result.Add(block);
-                coveredChildren.AddRange(group.Children());
-            }
-
-            IEnumerable<Guid> remainingNodes = nodeDictionary.Keys.Except(coveredChildren);
-            result.AddRange(remainingNodes.Select(x => nodeDictionary[x]));
-
-            return result;
+                Engine.Reflection.Compute.RecordError("failed to convert the cluster content into a CSharp syntax node.");
+                return "";
+            }   
+            else
+                return cSharpNode.NormalizeWhitespace().ToFullString();
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static BlockNode ApplyGroup(Dictionary<Guid, INode> nodes, NodeGroup group)
-        {
-            List<INode> content = group.NodeIds.Where(x => nodes.ContainsKey(x)).Select(x => nodes[x]).ToList();
-            content = content.Concat(group.InternalGroups.Select(x => ApplyGroup(nodes, x))).ToList();
-            content = NodeSequence(content);
-
-            return new BlockNode(content, group.Description);
-        }
 
         /***************************************************/
     }

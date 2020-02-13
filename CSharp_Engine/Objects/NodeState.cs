@@ -32,7 +32,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code.Objects
+namespace BH.Engine.CSharp.Objects
 {
     public class NodeState
     {

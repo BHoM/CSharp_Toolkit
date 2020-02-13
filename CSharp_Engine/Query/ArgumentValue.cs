@@ -21,7 +21,7 @@
  */
 
 using BH.Engine.Reflection;
-using BH.oM.Node2Code;
+using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
 using Microsoft.CodeAnalysis;
@@ -35,7 +35,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Node2Code
+namespace BH.Engine.CSharp
 {
     public static partial class Query
     {
@@ -43,12 +43,25 @@ namespace BH.Engine.Node2Code
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups)")]
-        [Input("group", "Group to get the children from")]
-        [Output("Ids of the children nodes")]
-        public static List<Guid> Children(this NodeGroup group)
+        [Description("Get the C# expression corresponding to a receiver param given a list of available variables")]
+        [Input("receiver", "Input of a node we need the C# expression for")]
+        [Input("variables", "Variables available in the context of the receiver param")]
+        [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the receiver parameter")]
+        public static ExpressionSyntax ArgumentValue(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {
-            return group.NodeIds.Concat(group.InternalGroups.SelectMany(x => x.Children())).ToList();
+            if (receiver.SourceId == Guid.Empty)
+            {
+                if (receiver.DefaultValue == null)
+                    return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
+                else if (receiver.DefaultValue is string)
+                    return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(receiver.DefaultValue.ToString()));
+                else
+                    return SyntaxFactory.IdentifierName(receiver.DefaultValue.ToString());
+            }
+            else if (variables.ContainsKey(receiver.SourceId))
+                return variables[receiver.SourceId].Expression;
+            else
+                return SyntaxFactory.IdentifierName(receiver.Name);
         }
 
         /***************************************************/
