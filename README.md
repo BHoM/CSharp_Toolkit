@@ -2,7 +2,7 @@
 
 # CSharp_Toolkit
 
-This toolkit provides teh capability to convert between C# code and a BHoM Syntax Tree. This opens the possibility to convert scripts and other supported langages to and from C# the same way BH.oM allows to translate data between softwares through a common langage. 
+This toolkit provides the capability to convert between C# code and a BHoM Syntax Tree. This opens the possibility to convert scripts and other supported languages to and from C# the same way BH.oM allows translating data between external softwares through a common language. 
 
 ### Documentation
 For more information about functionality see [CSharp_Toolkit wiki](https://github.com/BHoM/CSharp_Toolkit/wiki)
