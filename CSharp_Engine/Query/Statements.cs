@@ -219,7 +219,8 @@ namespace BH.Engine.CSharp
                 }
                 else
                 {
-                    expression = ForLoop(node, expression, variables, listInputs, out StatementSyntax loopStatement);
+                    StatementSyntax loopStatement = null;
+                    expression = ForLoop(node, expression, variables, listInputs, out loopStatement);
                     extraStatements.Add(loopStatement);
                 }
                     
