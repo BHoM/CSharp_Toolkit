@@ -146,33 +146,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
 xcopy "$(TargetDir)*.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-
-mkdir "C:\ProgramData\BHoM\Assemblies\cs"
-mkdir "C:\ProgramData\BHoM\Assemblies\de"
-mkdir "C:\ProgramData\BHoM\Assemblies\es"
-mkdir "C:\ProgramData\BHoM\Assemblies\fr"
-mkdir "C:\ProgramData\BHoM\Assemblies\it"
-mkdir "C:\ProgramData\BHoM\Assemblies\ja"
-mkdir "C:\ProgramData\BHoM\Assemblies\ko"
-mkdir "C:\ProgramData\BHoM\Assemblies\pl"
-mkdir "C:\ProgramData\BHoM\Assemblies\pt-BR"
-mkdir "C:\ProgramData\BHoM\Assemblies\ru"
-mkdir "C:\ProgramData\BHoM\Assemblies\tr"
-mkdir "C:\ProgramData\BHoM\Assemblies\zh-Hans"
-mkdir "C:\ProgramData\BHoM\Assemblies\zh-Hant"
-
-xcopy "$(TargetDir)\cs\*.dll"  "C:\ProgramData\BHoM\Assemblies\cs" /Y
-xcopy "$(TargetDir)\de\*.dll"  "C:\ProgramData\BHoM\Assemblies\de" /Y
-xcopy "$(TargetDir)\es\*.dll"  "C:\ProgramData\BHoM\Assemblies\es" /Y
-xcopy "$(TargetDir)\fr\*.dll"  "C:\ProgramData\BHoM\Assemblies\fr" /Y
-xcopy "$(TargetDir)\it\*.dll"  "C:\ProgramData\BHoM\Assemblies\it" /Y
-xcopy "$(TargetDir)\ja\*.dll"  "C:\ProgramData\BHoM\Assemblies\ja" /Y
-xcopy "$(TargetDir)\ko\*.dll"  "C:\ProgramData\BHoM\Assemblies\ko" /Y
-xcopy "$(TargetDir)\pl\*.dll"  "C:\ProgramData\BHoM\Assemblies\pl" /Y
-xcopy "$(TargetDir)\pt-BR\*.dll"  "C:\ProgramData\BHoM\Assemblies\pt-BR" /Y
-xcopy "$(TargetDir)\ru\*.dll"  "C:\ProgramData\BHoM\Assemblies\ru" /Y
-xcopy "$(TargetDir)\tr\*.dll"  "C:\ProgramData\BHoM\Assemblies\tr" /Y
-xcopy "$(TargetDir)\zh-Hans\*.dll"  "C:\ProgramData\BHoM\Assemblies\zh-Hans" /Y
-xcopy "$(TargetDir)\zh-Hant\*.dll"  "C:\ProgramData\BHoM\Assemblies\zh-Hant" /Y</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
