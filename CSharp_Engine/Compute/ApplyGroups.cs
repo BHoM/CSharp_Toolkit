@@ -77,7 +77,7 @@ namespace BH.Engine.CSharp
             content = content.Concat(group.InternalGroups.Select(x => ApplyGroup(nodes, x))).ToList();
             content = NodeSequence(content);
 
-            return new BlockNode(content, group.Description);
+            return Engine.Programming.Create.BlockNode(content, group.Description);
         }
 
         /***************************************************/
