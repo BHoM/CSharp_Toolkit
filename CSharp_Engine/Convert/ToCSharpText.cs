@@ -23,6 +23,9 @@
 using BH.oM.CSharp;
 using BH.oM.Programming;
 using BH.oM.Reflection.Attributes;
+using ICSharpCode.Decompiler;
+using ICSharpCode.Decompiler.CSharp;
+using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -61,6 +64,96 @@ namespace BH.Engine.CSharp
                 return cSharpNode.NormalizeWhitespace().ToFullString();
         }
 
+        /***************************************************/
+
+        [Description("Convert a method into C# code")]
+        [Input("method", "method to convert")]
+        [Input("wrapWithType", "The returned code will include the declaring type and its namespace.")]
+        [Input("standAlone", "Add the minimum amount of code to the declaring type definition so it can be compiled in isolation.")]
+        [Output("Corresponding C# code")]
+        public static string ToCSharpText(this MethodInfo method, bool wrapWithType = false, bool standAlone = false)
+        {
+            Assembly asm = method.DeclaringType.Assembly;
+            List<ParameterInfo> methodParams = method.GetParameters().ToList();
+
+            var decompiler = new CSharpDecompiler(asm.Location, new DecompilerSettings());
+            var name = new FullTypeName(method.DeclaringType.FullName);
+            ITypeDefinition typeInfo = decompiler.TypeSystem.MainModule.Compilation.FindType(name).GetDefinition();
+            List<IMethod> matches = typeInfo.Methods.Where(x => x.Name == method.Name && x.Parameters.Count == methodParams.Count).ToList();
+
+            IMethod match = null;
+            if (matches.Count == 1)
+                match = matches.First();
+            else if (matches.Count > 1)
+                match = matches.FirstOrDefault(x => IsMatching(methodParams, x.Parameters));
+
+            if (match == null)
+                return "Failed to find the corresponding method";
+            else
+            {
+                string code = decompiler.DecompileAsString(match.MetadataToken);
+                if (wrapWithType)
+                    code = WrapWithType(code, method);
+                if (standAlone)
+                    code = Compute.MakeStandAlone(code, method);
+                return code;
+            }
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool IsMatching(List<ParameterInfo> methodParams, IReadOnlyList<IParameter> reflectionParams)
+        {
+            if (methodParams.Count != reflectionParams.Count)
+                return false;
+
+            bool ok = true;
+            for (int i = 0; i < methodParams.Count; i++)
+            {
+                string fullName = methodParams[i].ParameterType.FullName;
+                if (fullName != null && !fullName.Contains(','))
+                    ok &= fullName == reflectionParams[i].Type.FullName;
+                else
+                    ok &= methodParams[i].Name == reflectionParams[i].Name;
+            }
+
+            return ok;
+        }
+
+        /***************************************************/
+
+        private static string WrapWithType(string code, MethodInfo method)
+        {
+            List<string> lines = code.Split(new char[] { '\n' }).ToList();
+            int nbUsing = lines.FindLastIndex(x => x.StartsWith("using")) + 1;
+
+            List<string> usings = lines.Take(nbUsing).ToList();
+            List<string> body = lines.Skip(nbUsing).ToList();
+
+            for (int i = 0; i < body.Count; i++)
+                body[i] = "\t\t" + body[i];
+
+            List<string> newLines = new List<string>
+            {
+                "",
+                $"namespace {method.DeclaringType.Namespace}",
+                "{",
+                $"\tpublic static partial class {method.DeclaringType.Name}",
+                "\t{"
+            };
+
+            List<string> lastLines = new List<string>
+            {
+                "\t}",
+                "}"
+            };
+
+            List<string> fullCode = usings.Concat(newLines).Concat(body).Concat(lastLines).ToList();
+            return fullCode.Aggregate((a, b) => a + "\n" + b);
+        }
 
         /***************************************************/
     }
