@@ -63,7 +63,7 @@ namespace BH.Engine.CSharp
                 // Get nodes that are now ready
                 List<ReceiverState> nextReceivers = NextReceivers(nodeState.Node.Outputs, receiverStates);
                 nextReceivers.ForEach(x => x.Reached = true);
-                List<NodeState> nextNodes = nextReceivers.Select(x => x.Receiver.ParentId).Distinct()
+                List<NodeState> nextNodes = nextReceivers.Select(x => x.ParentId).Distinct()
                     .Where(x => nodeStates.ContainsKey(x)).Select(x => nodeStates[x])
                     .Where(x => IsReady(x))
                     .ToList();
@@ -82,10 +82,15 @@ namespace BH.Engine.CSharp
         {
             List<Guid> emitters = nodes.SelectMany(n => n.Outputs.Where(x => x.TargetIds.Count > 0)).Select(x => x.BHoM_Guid).ToList();
 
-            return nodes
-                .SelectMany(x => x.Inputs)
-                .Where(x => x.BHoM_Guid != Guid.Empty && emitters.Contains(x.SourceId))
-                .ToDictionary(x => x.BHoM_Guid, x => new ReceiverState { Receiver = x, Reached = x.SourceId == Guid.Empty });
+            Dictionary<Guid, ReceiverState> states = new Dictionary<Guid, ReceiverState>();
+
+            foreach (INode node in nodes)
+            {
+                foreach (ReceiverParam param in node.Inputs.Where(x => x.BHoM_Guid != Guid.Empty && emitters.Contains(x.SourceId)))
+                    states[param.BHoM_Guid] = new ReceiverState { Receiver = param, Reached = param.SourceId == Guid.Empty, ParentId = node.BHoM_Guid };
+            }
+
+            return states;
         }
 
         /***************************************************/
