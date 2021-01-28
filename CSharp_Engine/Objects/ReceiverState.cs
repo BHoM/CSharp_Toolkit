@@ -47,6 +47,8 @@ namespace BH.Engine.CSharp.Objects
 
         public bool Reached { get; set; } = false;
 
+        public Guid ParentId { get; set; } = Guid.Empty;
+
         /***************************************************/
     }
 }
