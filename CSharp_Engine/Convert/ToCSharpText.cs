@@ -22,7 +22,7 @@
 
 using BH.oM.CSharp;
 using BH.oM.Programming;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.TypeSystem;
@@ -57,7 +57,7 @@ namespace BH.Engine.CSharp
 
             if (cSharpNode == null)
             {
-                Engine.Reflection.Compute.RecordError("failed to convert the cluster content into a CSharp syntax node.");
+                BH.Engine.Base.Compute.RecordError("failed to convert the cluster content into a CSharp syntax node.");
                 return "";
             }   
             else

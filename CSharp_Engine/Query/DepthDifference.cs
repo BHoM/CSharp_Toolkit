@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.oM.CSharp;
 using BH.oM.Programming;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

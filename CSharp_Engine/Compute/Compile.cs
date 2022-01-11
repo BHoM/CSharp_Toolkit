@@ -24,7 +24,7 @@ using BH.Engine.CSharp.Objects;
 using BH.Engine.Reflection;
 using BH.oM.CSharp;
 using BH.oM.Programming;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CSharp;
@@ -60,7 +60,7 @@ namespace BH.Engine.CSharp
             if (compilerResult.Errors.Count > 0)
             {
                 string message = "Failed to compile code. Errors:" + compilerResult.Errors.OfType<CompilerError>().Select(x => "\n" + x.ToString()).Aggregate((a,b) => a + b);
-                BH.Engine.Reflection.Compute.RecordError(message);
+                BH.Engine.Base.Compute.RecordError(message);
                 return null;
             }
             else
