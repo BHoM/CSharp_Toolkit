@@ -24,7 +24,7 @@ using BH.Engine.CSharp.Objects;
 using BH.Engine.Reflection;
 using BH.oM.CSharp;
 using BH.oM.Programming;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
