@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSharp_oM")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("https://github.com/BHoM/CSharp_Toolkit")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CSharp_oM")]
