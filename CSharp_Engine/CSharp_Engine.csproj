@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <BaseOutputPath>..\Build\</BaseOutputPath>
     <RootNamespace>BH.Engine.CSharp</RootNamespace>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
