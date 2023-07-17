@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>https://github.com/BHoM/CSharp_Toolkit</Description>
     <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
-    <BaseOutputPath>..\Build\</BaseOutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <RootNamespace>BH.Engine.CSharp</RootNamespace>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
