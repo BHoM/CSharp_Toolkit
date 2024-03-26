@@ -46,8 +46,8 @@ namespace BH.Engine.CSharp
         [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
             "\nThe depth represents the number of list levels are wrapped around the underlying type." +
             "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
-        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
-        [Input("emiters", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source.")]
+        [Input("emitters", "The receiver only stores the id of its source so this is the list of available sources.")]
         [Output("receiver.Depth - receiver.Source.Depth")]
         public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, DataParam> emitters)
         {
@@ -64,8 +64,8 @@ namespace BH.Engine.CSharp
         [Description("Compares the depth of the data type accepted by a receiver against the data type of its source." +
         "\nThe depth represents the number of list levels are wrapped around the underlying type." +
         "\nE.g. List<T> havve a depth of 1, List<List<T>> havve a depth of 2,...")]
-        [Input("receiver", "The receiver to get the depth difference for compared to its source")]
-        [Input("variables", "The receiver only stores the id of its source so this is the list of available sources")]
+        [Input("receiver", "The receiver to get the depth difference for compared to its source.")]
+        [Input("variables", "The receiver only stores the id of its source so this is the list of available sources.")]
         [Output("receiver.Depth - receiver.Source.Depth")]
         public static int DepthDifference(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {

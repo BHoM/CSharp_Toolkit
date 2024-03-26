@@ -43,8 +43,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups)")]
-        [Input("group", "Group to get the children from")]
+        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups).")]
+        [Input("group", "Group to get the children from.")]
         [Output("Ids of the children nodes")]
         public static List<Guid> Children(this NodeGroup group)
         {

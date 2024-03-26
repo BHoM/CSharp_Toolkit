@@ -42,8 +42,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# syntax token corresponding to a variable")]
-        [Input("variable", "Variable to get the token from")]
+        [Description("Get the C# syntax token corresponding to a variable.")]
+        [Input("variable", "Variable to get the token from.")]
         [Output("Microsoft.CodeAnalysis.CSharp.SyntaxToken corresponding to the variable")]
         public static SyntaxToken SyntaxToken(this Variable variable)
         {

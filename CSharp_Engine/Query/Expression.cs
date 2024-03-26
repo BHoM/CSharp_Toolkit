@@ -44,9 +44,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# expression corresponding to a node given a list of available input expressions")]
-        [Input("node", "Node to get the expression from")]
-        [Input("inputs", "List of input expressions available in the context of the node")]
+        [Description("Get the C# expression corresponding to a node given a list of available input expressions.")]
+        [Input("node", "Node to get the expression from.")]
+        [Input("inputs", "List of input expressions available in the context of the node.")]
         [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the node")]
         public static ExpressionSyntax IExpression(this INode node, List<ExpressionSyntax> inputs)
         {

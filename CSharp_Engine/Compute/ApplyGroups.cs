@@ -39,9 +39,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Replace groups of nodes into block nodes")]
-        [Input("nodes", "Flat list of nodes that need to be grouped")]
-        [Input("groups", "Defines how the nodes should be grouped")]
+        [Description("Replace groups of nodes into block nodes.")]
+        [Input("nodes", "Flat list of nodes that need to be grouped.")]
+        [Input("groups", "Defines how the nodes should be grouped.")]
         [Output("New list where the grouped nodes are now contained in block nodes")]
         public static List<INode> ApplyGroups(this List<INode> nodes, List<NodeGroup> groups)
         {

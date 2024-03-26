@@ -45,8 +45,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Convert a BHoM Cluster content into C# code")]
-        [Input("content", "Cluster content to convert")]
+        [Description("Convert a BHoM Cluster content into C# code.")]
+        [Input("content", "Cluster content to convert.")]
         [Output("Corresponding C# code")]
         public static string ToCSharpText(this ClusterContent content)
         {
@@ -66,8 +66,8 @@ namespace BH.Engine.CSharp
 
         /***************************************************/
 
-        [Description("Convert a method into C# code")]
-        [Input("method", "method to convert")]
+        [Description("Convert a method into C# code.")]
+        [Input("method", "method to convert.")]
         [Input("wrapWithType", "The returned code will include the declaring type and its namespace.")]
         [Input("standAlone", "Add the minimum amount of code to the declaring type definition so it can be compiled in isolation.")]
         [Output("Corresponding C# code")]

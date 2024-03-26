@@ -43,9 +43,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# expression corresponding to a receiver param given a list of available variables")]
-        [Input("receiver", "Input of a node we need the C# expression for")]
-        [Input("variables", "Variables available in the context of the receiver param")]
+        [Description("Get the C# expression corresponding to a receiver param given a list of available variables.")]
+        [Input("receiver", "Input of a node we need the C# expression for.")]
+        [Input("variables", "Variables available in the context of the receiver param.")]
         [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the receiver parameter")]
         public static ExpressionSyntax ArgumentValue(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {
