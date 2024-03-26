@@ -40,8 +40,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Order the nodes in a sequence where each node appears after all its inputs")]
-        [Input("nodes", "List of nodes to order")]
+        [Description("Order the nodes in a sequence where each node appears after all its inputs.")]
+        [Input("nodes", "List of nodes to order.")]
         [Output("Ordered list of nodes")]
         public static List<INode> NodeSequence(this List<INode> nodes)
         {

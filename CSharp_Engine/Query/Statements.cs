@@ -45,10 +45,10 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the list of C# statements corresponding to a node given a list of available variables")]
-        [Input("node", "Node to get the statements from")]
-        [Input("variables", "List of variables available in the context of the node")]
-        [Input("depth", "Optional input defining how many groups are wrapping this node")]
+        [Description("Get the list of C# statements corresponding to a node given a list of available variables.")]
+        [Input("node", "Node to get the statements from.")]
+        [Input("variables", "List of variables available in the context of the node.")]
+        [Input("depth", "Optional input defining how many groups are wrapping this node.")]
         [Output("Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the node")]
         public static List<StatementSyntax> IStatements(this INode node, Dictionary<Guid, Variable> variables, int depth = 0)
         {

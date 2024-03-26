@@ -44,8 +44,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# statement syntax corresponding to the content of a cluster")]
-        [Input("content", "cluster content to get the statement syntax from")]
+        [Description("Get the C# statement syntax corresponding to the content of a cluster.")]
+        [Input("content", "cluster content to get the statement syntax from.")]
         [Output("List of Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the input content")]
         public static List<StatementSyntax> Body(this ClusterContent content)
         {

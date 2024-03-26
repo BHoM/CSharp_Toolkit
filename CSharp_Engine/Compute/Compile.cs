@@ -45,10 +45,10 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Compiles C# code into a method")]
-        [Input("code", "C# code to be compiled")]
-        [Input("refFiles", "List of dll files necessary for that code to compile")]
-        [Output("method", "Resulting method")]
+        [Description("Compiles C# code into a method.")]
+        [Input("code", "C# code to be compiled.")]
+        [Input("refFiles", "List of dll files necessary for that code to compile.")]
+        [Output("method", "Resulting method.")]
         public static MethodInfo CompileMethod(string code, List<string> refFiles)
         {
             CSharpCodeProvider cSharp = new CSharpCodeProvider();

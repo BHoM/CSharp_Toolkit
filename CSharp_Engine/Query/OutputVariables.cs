@@ -43,9 +43,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# inline expressions corresponding to a node outputs given a list of available variables")]
-        [Input("node", "Node to get the expression from")]
-        [Input("variables", "List of variables available in the context of the node")]
+        [Description("Get the C# inline expressions corresponding to a node outputs given a list of available variables.")]
+        [Input("node", "Node to get the expression from.")]
+        [Input("variables", "List of variables available in the context of the node.")]
         [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the node")]
         public static Dictionary<Guid, Variable> IOutputVariables(this INode node, Dictionary<Guid, Variable> variables)
         {

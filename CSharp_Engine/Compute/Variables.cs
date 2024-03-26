@@ -42,9 +42,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Compute all variables existing within a block of nodes (i.e the nodes and the inputs for that block)")]
-        [Input("nodes", "List of nodes inside that block to extract variables from")]
-        [Input("blockInputs", "List of input parameters for that block")]
+        [Description("Compute all variables existing within a block of nodes (i.e the nodes and the inputs for that block).")]
+        [Input("nodes", "List of nodes inside that block to extract variables from.")]
+        [Input("blockInputs", "List of input parameters for that block.")]
         [Output("Variables organised by the id of the parameter generating them")]
         public static Dictionary<Guid, Variable> Variables(this List<INode> nodes, List<DataParam> blockInputs)
         {

@@ -43,8 +43,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# type syntax corresponding to the first output of a cluster content")]
-        [Input("content", "Cluster content to get the type syntax from")]
+        [Description("Get the C# type syntax corresponding to the first output of a cluster content.")]
+        [Input("content", "Cluster content to get the type syntax from.")]
         [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the content first output")]
         public static TypeSyntax ReturnType(this ClusterContent content)
         {
@@ -57,9 +57,9 @@ namespace BH.Engine.CSharp
 
         /***************************************************/
 
-        [Description("Get the C# type syntax corresponding to the first output of a node")]
-        [Input("node", "node to get the type syntax from")]
-        [Input("depth", "number of list levels the return type needs to be wrapped into")]
+        [Description("Get the C# type syntax corresponding to the first output of a node.")]
+        [Input("node", "node to get the type syntax from.")]
+        [Input("depth", "number of list levels the return type needs to be wrapped into.")]
         [Output("Microsoft.CodeAnalysis.CSharp.TypeSyntax corresponding to the return type of the node first output")]
         public static TypeSyntax IReturnType(this INode node, int depth = 0)
         {

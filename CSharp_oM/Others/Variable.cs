@@ -39,13 +39,13 @@ namespace BH.oM.CSharp
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("System.Type of the variable")]
+        [Description("System.Type of the variable.")]
         public virtual Type Type { get; set; } = typeof(object);
 
-        [Description("C# syntax representation of the variable")]
+        [Description("C# syntax representation of the variable.")]
         public virtual ExpressionSyntax Expression { get; set; } = null;
 
-        [Description("Id of the node parameter that generated this variable")]
+        [Description("Id of the node parameter that generated this variable.")]
         public virtual Guid SourceId { get; set; } = Guid.Empty;
 
         /***************************************************/

@@ -45,8 +45,8 @@ namespace BH.Engine.CSharp
         /***************************************************/
 
         [Description("Add the minimum amount of code to the input code so it can be compiled in isolation.")]
-        [Input("code", "Original code to be modified so it can be compiled is isolation")]
-        [Input("method", "Method that was used to generate the input code")]
+        [Input("code", "Original code to be modified so it can be compiled is isolation.")]
+        [Input("method", "Method that was used to generate the input code.")]
         [Output("code", "Stand alone code that should content all the necessary declarations to compile.")]
         public static string MakeStandAlone(string code, MethodInfo method)
         {
