@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,9 +42,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Compute all variables existing within a block of nodes (i.e the nodes and the inputs for that block)")]
-        [Input("nodes", "List of nodes inside that block to extract variables from")]
-        [Input("blockInputs", "List of input parameters for that block")]
+        [Description("Compute all variables existing within a block of nodes (i.e the nodes and the inputs for that block).")]
+        [Input("nodes", "List of nodes inside that block to extract variables from.")]
+        [Input("blockInputs", "List of input parameters for that block.")]
         [Output("Variables organised by the id of the parameter generating them")]
         public static Dictionary<Guid, Variable> Variables(this List<INode> nodes, List<DataParam> blockInputs)
         {
@@ -174,6 +174,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

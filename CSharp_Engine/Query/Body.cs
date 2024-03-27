@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -44,8 +44,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# statement syntax corresponding to the content of a cluster")]
-        [Input("content", "cluster content to get the statement syntax from")]
+        [Description("Get the C# statement syntax corresponding to the content of a cluster.")]
+        [Input("content", "cluster content to get the statement syntax from.")]
         [Output("List of Microsoft.CodeAnalysis.CSharp.StatementSyntax corresponding to the input content")]
         public static List<StatementSyntax> Body(this ClusterContent content)
         {
@@ -86,6 +86,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

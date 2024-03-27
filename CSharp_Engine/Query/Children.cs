@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -43,8 +43,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups)")]
-        [Input("group", "Group to get the children from")]
+        [Description("Get the ids of all the nodes inside the input group (including nodes inside internal groups).")]
+        [Input("group", "Group to get the children from.")]
         [Output("Ids of the children nodes")]
         public static List<Guid> Children(this NodeGroup group)
         {
@@ -54,6 +54,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

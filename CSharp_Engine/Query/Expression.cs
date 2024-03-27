@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -44,9 +44,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# expression corresponding to a node given a list of available input expressions")]
-        [Input("node", "Node to get the expression from")]
-        [Input("inputs", "List of input expressions available in the context of the node")]
+        [Description("Get the C# expression corresponding to a node given a list of available input expressions.")]
+        [Input("node", "Node to get the expression from.")]
+        [Input("inputs", "List of input expressions available in the context of the node.")]
         [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the node")]
         public static ExpressionSyntax IExpression(this INode node, List<ExpressionSyntax> inputs)
         {
@@ -238,6 +238,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,8 +42,8 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Convert a BHoM Cluster content into a Microsoft CSharp syntax node")]
-        [Input("content", "Cluster content to convert")]
+        [Description("Convert a BHoM Cluster content into a Microsoft CSharp syntax node.")]
+        [Input("content", "Cluster content to convert.")]
         [Output("Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode corresponding to the input BHoM content")]
         public static CSharpSyntaxNode ToCSharpSyntaxNode(this ClusterContent content)
         {
@@ -78,6 +78,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

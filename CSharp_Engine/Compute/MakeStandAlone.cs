@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,8 +45,8 @@ namespace BH.Engine.CSharp
         /***************************************************/
 
         [Description("Add the minimum amount of code to the input code so it can be compiled in isolation.")]
-        [Input("code", "Original code to be modified so it can be compiled is isolation")]
-        [Input("method", "Method that was used to generate the input code")]
+        [Input("code", "Original code to be modified so it can be compiled is isolation.")]
+        [Input("method", "Method that was used to generate the input code.")]
         [Output("code", "Stand alone code that should content all the necessary declarations to compile.")]
         public static string MakeStandAlone(string code, MethodInfo method)
         {
@@ -130,6 +130,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,9 +39,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Replace groups of nodes into block nodes")]
-        [Input("nodes", "Flat list of nodes that need to be grouped")]
-        [Input("groups", "Defines how the nodes should be grouped")]
+        [Description("Replace groups of nodes into block nodes.")]
+        [Input("nodes", "Flat list of nodes that need to be grouped.")]
+        [Input("groups", "Defines how the nodes should be grouped.")]
         [Output("New list where the grouped nodes are now contained in block nodes")]
         public static List<INode> ApplyGroups(this List<INode> nodes, List<NodeGroup> groups)
         {
@@ -83,6 +83,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 

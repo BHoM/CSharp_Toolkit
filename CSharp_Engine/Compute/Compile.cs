@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,10 +45,10 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Compiles C# code into a method")]
-        [Input("code", "C# code to be compiled")]
-        [Input("refFiles", "List of dll files necessary for that code to compile")]
-        [Output("method", "Resulting method")]
+        [Description("Compiles C# code into a method.")]
+        [Input("code", "C# code to be compiled.")]
+        [Input("refFiles", "List of dll files necessary for that code to compile.")]
+        [Output("method", "Resulting method.")]
         public static MethodInfo CompileMethod(string code, List<string> refFiles)
         {
             CSharpCodeProvider cSharp = new CSharpCodeProvider();
@@ -74,5 +74,6 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 

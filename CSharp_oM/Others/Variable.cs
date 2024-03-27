@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,18 +39,19 @@ namespace BH.oM.CSharp
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("System.Type of the variable")]
+        [Description("System.Type of the variable.")]
         public virtual Type Type { get; set; } = typeof(object);
 
-        [Description("C# syntax representation of the variable")]
+        [Description("C# syntax representation of the variable.")]
         public virtual ExpressionSyntax Expression { get; set; } = null;
 
-        [Description("Id of the node parameter that generated this variable")]
+        [Description("Id of the node parameter that generated this variable.")]
         public virtual Guid SourceId { get; set; } = Guid.Empty;
 
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -43,9 +43,9 @@ namespace BH.Engine.CSharp
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the C# expression corresponding to a receiver param given a list of available variables")]
-        [Input("receiver", "Input of a node we need the C# expression for")]
-        [Input("variables", "Variables available in the context of the receiver param")]
+        [Description("Get the C# expression corresponding to a receiver param given a list of available variables.")]
+        [Input("receiver", "Input of a node we need the C# expression for.")]
+        [Input("variables", "Variables available in the context of the receiver param.")]
         [Output("Microsoft.CodeAnalysis.CSharp.ExpressionSyntax corresponding to the receiver parameter")]
         public static ExpressionSyntax ArgumentValue(this ReceiverParam receiver, Dictionary<Guid, Variable> variables)
         {
@@ -67,6 +67,7 @@ namespace BH.Engine.CSharp
         /***************************************************/
     }
 }
+
 
 
 
